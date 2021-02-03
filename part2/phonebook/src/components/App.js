@@ -3,6 +3,7 @@ import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
 import axios from "axios";
+import PersonService from "../PersonService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -15,7 +16,6 @@ const App = () => {
 
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
-  const [id, setID] = useState(4);
   const [filter, setFilter] = useState("");
 
   function onNameInputChange(event) {
@@ -26,19 +26,18 @@ const App = () => {
   function addPerson(event) {
     event.preventDefault();
     let listOfNames = persons.map((person) => person.name);
+    // Check for duplicate persons
     if (listOfNames.includes(newName)) {
       alertDuplicateName();
       setNewName("");
       setNewNumber("");
     } else {
-      let newPersonsList = [
-        ...persons,
-        { name: newName, number: newNumber, id: id },
-      ];
-      setPersons(newPersonsList);
+      let newPerson = { name: newName, number: newNumber};
+      PersonService.create(newPerson).then((returnedPerson) => {
+        setPersons(persons.concat(returnedPerson));
+      });
       setNewName("");
       setNewNumber("");
-      setID(id + 1);
     }
   }
 
