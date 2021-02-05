@@ -40,6 +40,15 @@ const App = () => {
     }
   }
 
+  function deletePerson(person) {
+    if (window.confirm(`Do you really want to delete ${person.name}?`)) {
+      PersonService.deletePerson(person);
+      PersonService.getAll().then((returnedPersons) =>
+        setPersons(returnedPersons)
+      );
+    }
+  }
+
   function alertDuplicateName() {
     alert(`${newName} is already added to phonebook`);
   }
@@ -76,7 +85,7 @@ const App = () => {
         newNumber={newNumber}
       />
       <h2>Numbers</h2>
-      <Persons personsToShow={implementFilter()} />
+      <Persons personsToShow={implementFilter()} deletePerson={deletePerson} />
     </div>
   );
 };
