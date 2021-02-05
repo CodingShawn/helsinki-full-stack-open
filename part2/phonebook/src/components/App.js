@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
-import axios from "axios";
 import PersonService from "../PersonService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    PersonService.getAll().then((returnedPersons) =>
+      setPersons(returnedPersons)
+    );
   }, []);
 
   const [newName, setNewName] = useState("");
@@ -32,7 +31,7 @@ const App = () => {
       setNewName("");
       setNewNumber("");
     } else {
-      let newPerson = { name: newName, number: newNumber};
+      let newPerson = { name: newName, number: newNumber };
       PersonService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
       });
