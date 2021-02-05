@@ -16,4 +16,9 @@ function deletePerson(person) {
   axios.delete(deleteUrl);
 }
 
-export default { create, getAll, deletePerson };
+function update(person, id) {
+  let updateUrl = baseUrl + `/${id}`;
+  axios.put(updateUrl, person);
+}
+
+export default { create, getAll, deletePerson, update };

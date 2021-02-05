@@ -26,17 +26,29 @@ const App = () => {
     event.preventDefault();
     let listOfNames = persons.map((person) => person.name);
     // Check for duplicate persons
+    let newPerson = { name: newName, number: newNumber };
     if (listOfNames.includes(newName)) {
-      alertDuplicateName();
-      setNewName("");
-      setNewNumber("");
+      let targetId = persons.find((person) => person.name === newName).id;
+      updatePerson(newPerson, targetId);
     } else {
-      let newPerson = { name: newName, number: newNumber };
       PersonService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
       });
-      setNewName("");
-      setNewNumber("");
+    }
+    setNewName("");
+    setNewNumber("");
+  }
+
+  function updatePerson(person, targetId) {
+    if (
+      window.confirm(
+        `${person.name} is already added to phonebook. Replace the old number with a new one?`
+      )
+    ) {
+      PersonService.update(person, targetId);
+      PersonService.getAll().then((returnedPersons) =>
+        setPersons(returnedPersons)
+      );
     }
   }
 
@@ -49,9 +61,9 @@ const App = () => {
     }
   }
 
-  function alertDuplicateName() {
-    alert(`${newName} is already added to phonebook`);
-  }
+  // function alertDuplicateName() {
+  //   alert(`${newName} is already added to phonebook`);
+  // }
 
   function onNumberInputChange(event) {
     let input = event.target.value;
