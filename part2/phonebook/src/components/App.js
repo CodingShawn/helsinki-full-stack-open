@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import Filter from "./Filter";
 import PersonForm from "./PersonForm";
 import Persons from "./Persons";
+import Alert from "./Alert";
 import PersonService from "../PersonService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
+  const [alert, setAlert] = useState(null);
 
   useEffect(() => {
     PersonService.getAll().then((returnedPersons) =>
@@ -16,6 +18,11 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+
+  function showAlert(alert) {
+    setAlert(alert);
+    setTimeout(() => setAlert(null), 5000);
+  }
 
   function onNameInputChange(event) {
     let input = event.target.value;
@@ -30,10 +37,12 @@ const App = () => {
     if (listOfNames.includes(newName)) {
       let targetId = persons.find((person) => person.name === newName).id;
       updatePerson(newPerson, targetId);
+      showAlert(`Updated ${newName}'s number`);
     } else {
       PersonService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
       });
+      showAlert(`Added ${newName}`);
     }
     setNewName("");
     setNewNumber("");
@@ -87,6 +96,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Alert alert={alert} />
       <Filter onFilterInputChange={onFilterInputChange} filter={filter} />
       <h2>add a new person</h2>
       <PersonForm
