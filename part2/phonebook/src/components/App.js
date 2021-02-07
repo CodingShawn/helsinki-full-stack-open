@@ -37,7 +37,6 @@ const App = () => {
     if (listOfNames.includes(newName)) {
       let targetId = persons.find((person) => person.name === newName).id;
       updatePerson(newPerson, targetId);
-      showAlert(`Updated ${newName}'s number`);
     } else {
       PersonService.create(newPerson).then((returnedPerson) => {
         setPersons(persons.concat(returnedPerson));
@@ -54,10 +53,16 @@ const App = () => {
         `${person.name} is already added to phonebook. Replace the old number with a new one?`
       )
     ) {
-      PersonService.update(person, targetId);
-      PersonService.getAll().then((returnedPersons) =>
-        setPersons(returnedPersons)
-      );
+      PersonService.update(person, targetId)
+        .then(() => {
+          PersonService.getAll().then((returnedPersons) =>
+            setPersons(returnedPersons)
+          );
+          showAlert(`Updated ${newName}'s number`);
+        })
+        .catch((error) => {
+          showAlert(`Information of ${newName} has already been removed from server`)
+        });
     }
   }
 
