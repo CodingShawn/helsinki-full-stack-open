@@ -8,6 +8,7 @@ import PersonService from "../PersonService";
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [alert, setAlert] = useState(null);
+  const [ifError, setIfError] = useState(false);
 
   useEffect(() => {
     PersonService.getAll().then((returnedPersons) =>
@@ -19,7 +20,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
 
-  function showAlert(alert) {
+  function showAlert(alert, ifError = false) {
+    setIfError(ifError);
     setAlert(alert);
     setTimeout(() => setAlert(null), 5000);
   }
@@ -61,7 +63,10 @@ const App = () => {
           showAlert(`Updated ${newName}'s number`);
         })
         .catch((error) => {
-          showAlert(`Information of ${newName} has already been removed from server`)
+          showAlert(
+            `Information of ${newName} has already been removed from server`,
+            true
+          );
         });
     }
   }
@@ -101,7 +106,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Alert alert={alert} />
+      <Alert alert={alert} ifError={ifError} />
       <Filter onFilterInputChange={onFilterInputChange} filter={filter} />
       <h2>add a new person</h2>
       <PersonForm
