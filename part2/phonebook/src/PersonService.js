@@ -18,7 +18,7 @@ function deletePerson(person) {
 
 function update(person, id) {
   let updateUrl = baseUrl + `/${id}`;
-  axios.put(updateUrl, person);
+  return axios.put(updateUrl, person).then((response) => response.data);
 }
 
 export default { create, getAll, deletePerson, update };
